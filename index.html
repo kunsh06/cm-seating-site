@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UC Davis CM Banquet Seating</title>
+  <style>
+    :root {
+      --bg: #08090d;
+      --panel: #11151d;
+      --panel-soft: #161b25;
+      --ink: #f6f1e8;
+      --muted: #a9adba;
+      --gold: #d9b45b;
+      --gold-bright: #ffe29a;
+      --gold-soft: rgba(217, 180, 91, 0.22);
+      --danger: #ff7676;
+      --line: rgba(255, 255, 255, 0.12);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(217, 180, 91, 0.14), transparent 32rem),
+        linear-gradient(180deg, #0d1017 0%, var(--bg) 55%, #050609 100%);
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .logo {
+      width: clamp(58px, 9vw, 84px);
+      height: clamp(58px, 9vw, 84px);
+      object-fit: contain;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: #0f1420;
+      padding: 8px;
+    }
+
+    .event-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.8rem, 4vw, 3.8rem);
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .event-kicker {
+      margin: 8px 0 0;
+      color: var(--gold);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(290px, 380px) 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .search-panel,
+    .plan-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(17, 21, 29, 0.88);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .search-panel {
+      padding: 24px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .panel-label {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .search-panel h2 {
+      margin: 0 0 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .search-copy {
+      margin: 0 0 22px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .search-form {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    label {
+      color: #d8d9df;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: #0b0e15;
+      padding: 13px 14px;
+      font: inherit;
+      outline: none;
+      transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px var(--gold-soft);
+    }
+
+    button {
+      border: 1px solid rgba(255, 226, 154, 0.46);
+      border-radius: var(--radius);
+      color: #14110a;
+      background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+      padding: 0 18px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 160ms ease, filter 160ms ease;
+    }
+
+    button:hover,
+    button:focus-visible {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .result {
+      min-height: 156px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+      padding: 18px;
+    }
+
+    .welcome {
+      margin: 0 0 16px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.45rem;
+      line-height: 1.15;
+    }
+
+    .seat-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .seat-stat {
+      border-radius: var(--radius);
+      background: rgba(217, 180, 91, 0.1);
+      border: 1px solid rgba(217, 180, 91, 0.28);
+      padding: 14px;
+    }
+
+    .seat-stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .seat-stat strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--gold-bright);
+      font-size: 1.4rem;
+    }
+
+    .message {
+      margin: 14px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .message.error {
+      color: var(--danger);
+    }
+
+    .sample-list {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .sample-list strong {
+      color: var(--ink);
+    }
+
+    .plan-panel {
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .plan-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .plan-header h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.35rem, 2.6vw, 2.2rem);
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 18px rgba(217, 180, 91, 0.85);
+    }
+
+    .floor-plan {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: #0b1924;
+      aspect-ratio: 1 / 1;
+      min-height: 0;
+    }
+
+    .floor-plan img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 1;
+    }
+
+    .seat {
+      position: absolute;
+      z-index: 5;
+      width: clamp(13px, 1.7vw, 20px);
+      height: clamp(13px, 1.7vw, 20px);
+      min-width: 0;
+      border: 1px solid rgba(255, 255, 255, 0.58);
+      border-radius: 50%;
+      padding: 0;
+      color: transparent;
+      background: rgba(255, 255, 255, 0.64);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      appearance: none;
+      line-height: 0;
+      transform: translate(-50%, -50%);
+      transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+    }
+
+    .seat:hover {
+      background: #fff;
+      transform: translate(-50%, -50%);
+    }
+
+    .seat:focus-visible {
+      outline: 2px solid var(--gold-bright);
+      outline-offset: 4px;
+      transform: translate(-50%, -50%);
+    }
+
+    .seat.is-active {
+      border-color: var(--gold-bright);
+      background: var(--gold);
+      box-shadow:
+        0 0 0 7px rgba(217, 180, 91, 0.26),
+        0 0 28px rgba(255, 226, 154, 0.9),
+        0 8px 20px rgba(0, 0, 0, 0.42);
+      transform: translate(-50%, -50%) scale(1.55);
+    }
+
+    .seat.is-active:hover,
+    .seat.is-active:focus-visible {
+      transform: translate(-50%, -50%) scale(1.55);
+    }
+
+    .seat.is-active::after {
+      content: attr(data-seat-label);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 12px);
+      min-width: max-content;
+      transform: translateX(-50%);
+      border: 1px solid rgba(255, 226, 154, 0.55);
+      border-radius: var(--radius);
+      color: #14110a;
+      background: var(--gold-bright);
+      padding: 5px 8px;
+      font-size: 0.64rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .empty-state {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 860px) {
+      .page {
+        width: min(100% - 20px, 720px);
+        padding-top: 22px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .search-panel {
+        position: static;
+        padding: 20px;
+      }
+
+      .plan-panel {
+        padding: 12px;
+      }
+
+      .plan-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .floor-plan {
+        aspect-ratio: 1 / 1;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .search-row {
+        flex-direction: column;
+      }
+
+      button {
+        min-height: 48px;
+      }
+
+      .seat-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .floor-plan {
+        min-height: 0;
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar" aria-label="Event header">
+      <img class="logo" src="logo.png" alt="UC Davis Construction Management logo" />
+      <div>
+        <p class="event-kicker">UC Davis Construction Management</p>
+        <h1 class="event-title">Banquet Seating</h1>
+      </div>
+    </header>
+
+    <section class="hero" aria-label="Banquet seating search and floor plan">
+      <aside class="search-panel">
+        <p class="panel-label">Find your seat</p>
+        <h2>Enter your name</h2>
+        <p class="search-copy">
+          Type part or all of your name to locate your assigned table and exact seat on the banquet floor plan.
+        </p>
+
+        <form class="search-form" id="seatSearchForm">
+          <label for="guestName">Guest name</label>
+          <div class="search-row">
+            <input id="guestName" type="search" autocomplete="name" placeholder="Example: Person 12" />
+            <button type="submit">Search</button>
+          </div>
+        </form>
+
+        <div class="result" id="resultPanel" aria-live="polite">
+          <p class="empty-state">Your seating assignment will appear here.</p>
+        </div>
+
+        <div class="sample-list">
+          <strong>Sample names:</strong> Person 1, Person 8, Person 24, Person 57, Person 80
+        </div>
+      </aside>
+
+      <section class="plan-panel" aria-label="Floor plan">
+        <div class="plan-header">
+          <h2>Floor Plan</h2>
+          <div class="legend" aria-label="Highlighted seat legend">
+            <span class="legend-dot"></span>
+            Highlighted seat
+          </div>
+        </div>
+
+        <div class="floor-plan" id="floorPlan">
+          <!-- Seat dots are positioned as percentages over this layout image. -->
+          <img id="floorPlanImage" src="layout.png" alt="Banquet floor plan with tables and seating overlay" />
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    // Guest data stays in one array so it can be replaced with the final banquet roster.
+    const guests = Array.from({ length: 80 }, (_, index) => {
+      const guestNumber = index + 1;
+      return {
+        name: `Person ${guestNumber}`,
+        table: `T${Math.ceil(guestNumber / 8)}`,
+        seat: ((guestNumber - 1) % 8) + 1
+      };
+    });
+
+    // Table center points are percentages of the colored layout.png.
+    // The image includes a left key panel, so these x/y values are based on the full square image.
+    const tableCenters = {
+      T1: { x: 34.7, y: 24.5 },
+      T2: { x: 56.5, y: 24.5 },
+      T3: { x: 77.2, y: 24.5 },
+      T4: { x: 41.2, y: 45.5 },
+      T5: { x: 49.9, y: 55.0 },
+      T6: { x: 62.5, y: 55.0 },
+      T7: { x: 70.0, y: 45.5 },
+      T8: { x: 37.0, y: 67.8 },
+      T9: { x: 56.5, y: 72.1 },
+      T10: { x: 77.0, y: 67.8 }
+    };
+
+    // Seat offsets form a scalable pattern for 8 chairs around each round table.
+    // For pixel-perfect placement, override any generated seat below in customSeatCoordinates.
+    const seatOffsets = {
+      1: { x: 0, y: -5.2 },
+      2: { x: 4.0, y: -3.8 },
+      3: { x: 5.3, y: 0 },
+      4: { x: 4.0, y: 3.8 },
+      5: { x: 0, y: 5.2 },
+      6: { x: -4.0, y: 3.8 },
+      7: { x: -5.3, y: 0 },
+      8: { x: -4.0, y: -3.8 }
+    };
+
+    // Example exact-position overrides. Add more entries like "T3-4": { x: 81.2, y: 28.3 } later.
+    const customSeatCoordinates = {
+      "T1-1": { x: 34.7, y: 19.3 },
+      "T1-2": { x: 38.8, y: 20.7 },
+      "T1-3": { x: 40.0, y: 24.5 },
+      "T2-1": { x: 56.5, y: 19.4 },
+      "T5-8": { x: 45.8, y: 51.2 },
+      "T10-5": { x: 77.0, y: 73.1 }
+    };
+
+    const floorPlan = document.querySelector("#floorPlan");
+    const resultPanel = document.querySelector("#resultPanel");
+    const searchForm = document.querySelector("#seatSearchForm");
+    const guestNameInput = document.querySelector("#guestName");
+
+    let activeSeatId = null;
+
+    renderSeatOverlay();
+
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      findGuest(guestNameInput.value);
+    });
+
+    guestNameInput.addEventListener("input", () => {
+      if (guestNameInput.value.trim().length >= 2) {
+        findGuest(guestNameInput.value);
+      }
+
+      if (guestNameInput.value.trim().length === 0) {
+        clearActiveSeat();
+        showEmptyState();
+      }
+    });
+
+    function findGuest(searchTerm) {
+      const normalizedSearch = normalizeName(searchTerm);
+
+      if (!normalizedSearch) {
+        clearActiveSeat();
+        showEmptyState();
+        return;
+      }
+
+      const matchingGuests = guests.filter((guest) =>
+        normalizeName(guest.name).includes(normalizedSearch)
+      );
+
+      if (matchingGuests.length === 0) {
+        clearActiveSeat();
+        showError(`No seating assignment found for "${searchTerm.trim()}".`);
+        return;
+      }
+
+      const guest = matchingGuests[0];
+      highlightSeat(`${guest.table}-${guest.seat}`);
+      showGuestResult(guest, matchingGuests.length);
+    }
+
+    function normalizeName(value) {
+      return value.trim().toLowerCase().replace(/\s+/g, " ");
+    }
+
+    function showGuestResult(guest, matchCount) {
+      const extraMatchText = matchCount > 1
+        ? `<p class="message">Showing the first partial match. Type more letters to narrow the result.</p>`
+        : "";
+
+      resultPanel.innerHTML = `
+        <p class="welcome">Welcome ${guest.name}</p>
+        <div class="seat-meta">
+          <div class="seat-stat">
+            <span>Table</span>
+            <strong>${guest.table}</strong>
+          </div>
+          <div class="seat-stat">
+            <span>Seat</span>
+            <strong>${guest.seat}</strong>
+          </div>
+        </div>
+        ${extraMatchText}
+      `;
+    }
+
+    function showError(message) {
+      resultPanel.innerHTML = `<p class="message error">${message}</p>`;
+    }
+
+    function showEmptyState() {
+      resultPanel.innerHTML = `<p class="empty-state">Your seating assignment will appear here.</p>`;
+    }
+
+    function clearActiveSeat() {
+      if (!activeSeatId) return;
+
+      const activeSeat = document.getElementById(activeSeatId);
+      if (activeSeat) {
+        activeSeat.classList.remove("is-active");
+      }
+
+      activeSeatId = null;
+    }
+
+    function highlightSeat(seatId) {
+      clearActiveSeat();
+
+      const seat = document.getElementById(seatId);
+      if (!seat) {
+        showError(`Seat ${seatId} has not been placed on the floor plan yet.`);
+        return;
+      }
+
+      seat.classList.add("is-active");
+      activeSeatId = seatId;
+    }
+
+    function renderSeatOverlay() {
+      Object.keys(tableCenters).forEach((table) => {
+        for (let seatNumber = 1; seatNumber <= 8; seatNumber += 1) {
+          const seatId = `${table}-${seatNumber}`;
+          const coordinate = getSeatCoordinate(table, seatNumber);
+          const seat = document.createElement("button");
+
+          seat.id = seatId;
+          seat.className = "seat";
+          seat.type = "button";
+          seat.style.left = `${coordinate.x}%`;
+          seat.style.top = `${coordinate.y}%`;
+          seat.dataset.seatLabel = seatId;
+          seat.setAttribute("aria-label", `${table}, seat ${seatNumber}`);
+          seat.title = `${table}, Seat ${seatNumber}`;
+
+          seat.addEventListener("click", () => {
+            const assignedGuest = guests.find((guest) =>
+              guest.table === table && guest.seat === seatNumber
+            );
+
+            if (assignedGuest) {
+              guestNameInput.value = assignedGuest.name;
+              highlightSeat(seatId);
+              showGuestResult(assignedGuest, 1);
+            }
+          });
+
+          floorPlan.appendChild(seat);
+        }
+      });
+    }
+
+    function getSeatCoordinate(table, seatNumber) {
+      const seatId = `${table}-${seatNumber}`;
+
+      if (customSeatCoordinates[seatId]) {
+        return customSeatCoordinates[seatId];
+      }
+
+      const center = tableCenters[table];
+      const offset = seatOffsets[seatNumber];
+
+      return {
+        x: center.x + offset.x,
+        y: center.y + offset.y
+      };
+    }
+
+  </script>
+</body>
+</html>
