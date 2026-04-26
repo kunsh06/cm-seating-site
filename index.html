@@ -251,6 +251,11 @@
       overflow: hidden;
     }
 
+    .plan-viewport {
+      overflow: visible;
+      border-radius: var(--radius);
+    }
+
     .plan-header {
       display: flex;
       align-items: center;
@@ -371,56 +376,172 @@
 
     @media (max-width: 860px) {
       .page {
-        width: min(100% - 20px, 720px);
-        padding-top: 22px;
+        width: min(100% - 16px, 720px);
+        padding: 18px 0 32px;
       }
 
       .topbar {
-        flex-direction: column;
+        justify-content: flex-start;
         gap: 12px;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
+        text-align: left;
+      }
+
+      .logo {
+        width: 54px;
+        height: 54px;
+        flex: 0 0 auto;
+      }
+
+      .event-kicker {
+        margin-top: 0;
+        font-size: 0.68rem;
+        letter-spacing: 0.1em;
+      }
+
+      .event-title {
+        font-size: clamp(1.7rem, 8vw, 2.4rem);
       }
 
       .hero {
         grid-template-columns: 1fr;
+        gap: 14px;
       }
 
       .search-panel {
         position: static;
-        padding: 20px;
+        padding: 16px;
+      }
+
+      .search-panel h2 {
+        margin-bottom: 8px;
+        font-size: 1.45rem;
+      }
+
+      .search-copy {
+        margin-bottom: 16px;
+        font-size: 0.95rem;
+      }
+
+      .result {
+        min-height: 118px;
+        padding: 14px;
       }
 
       .plan-panel {
-        padding: 12px;
+        padding: 10px;
+      }
+
+      .plan-header {
+        align-items: center;
+        flex-direction: row;
+        margin-bottom: 10px;
+      }
+
+      .plan-header h2 {
+        font-size: 1.35rem;
+      }
+
+      .legend {
+        font-size: 0.82rem;
+      }
+
+      .plan-viewport {
+        overflow: auto;
+        max-height: 72vh;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: #07121b;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .floor-plan {
+        width: 720px;
+        max-width: none;
+        aspect-ratio: 1 / 1;
+        border: 0;
+        border-radius: 0;
+      }
+
+      .seat {
+        width: 17px;
+        height: 17px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        width: calc(100% - 12px);
+        padding-top: 12px;
+      }
+
+      .topbar {
+        gap: 10px;
+      }
+
+      .logo {
+        width: 48px;
+        height: 48px;
+      }
+
+      .search-row {
+        gap: 8px;
+      }
+
+      .search-row button {
+        min-height: 46px;
+        padding: 0 13px;
+      }
+
+      input {
+        min-height: 46px;
+        padding: 11px 12px;
+      }
+
+      .seat-meta {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .seat-stat {
+        padding: 11px;
+      }
+
+      .sample-list {
+        display: none;
+      }
+
+      .plan-panel {
+        padding: 8px;
+      }
+
+      .legend {
+        font-size: 0.78rem;
+      }
+
+      .legend-dot {
+        width: 12px;
+        height: 12px;
+      }
+
+      .floor-plan {
+        width: 660px;
+      }
+
+    }
+
+    @media (max-width: 380px) {
+      .event-title {
+        font-size: 1.55rem;
       }
 
       .plan-header {
         align-items: flex-start;
         flex-direction: column;
+        gap: 8px;
       }
 
       .floor-plan {
-        aspect-ratio: 1 / 1;
+        width: 620px;
       }
-    }
-
-    @media (max-width: 520px) {
-      .search-row {
-        flex-direction: column;
-      }
-
-      button {
-        min-height: 48px;
-      }
-
-      .seat-meta {
-        grid-template-columns: 1fr;
-      }
-
-      .floor-plan {
-        min-height: 0;
-      }
-
     }
   </style>
 </head>
@@ -468,9 +589,11 @@
           </div>
         </div>
 
-        <div class="floor-plan" id="floorPlan">
-          <!-- Seat dots are positioned as percentages over this layout image. -->
-          <img id="floorPlanImage" src="layout.png" alt="Banquet floor plan with tables and seating overlay" />
+        <div class="plan-viewport" id="planViewport">
+          <div class="floor-plan" id="floorPlan">
+            <!-- Seat dots are positioned as percentages over this layout image. -->
+            <img id="floorPlanImage" src="layout.png" alt="Banquet floor plan with tables and seating overlay" />
+          </div>
         </div>
       </section>
     </section>
@@ -526,6 +649,7 @@
     };
 
     const floorPlan = document.querySelector("#floorPlan");
+    const planViewport = document.querySelector("#planViewport");
     const resultPanel = document.querySelector("#resultPanel");
     const searchForm = document.querySelector("#seatSearchForm");
     const guestNameInput = document.querySelector("#guestName");
@@ -533,6 +657,9 @@
     let activeSeatId = null;
 
     renderSeatOverlay();
+    centerMapOnSeatingArea();
+
+    window.addEventListener("resize", centerMapOnSeatingArea);
 
     searchForm.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -629,6 +756,7 @@
 
       seat.classList.add("is-active");
       activeSeatId = seatId;
+      scrollSeatIntoView(seat);
     }
 
     function renderSeatOverlay() {
@@ -678,6 +806,31 @@
         x: center.x + offset.x,
         y: center.y + offset.y
       };
+    }
+
+    function centerMapOnSeatingArea() {
+      if (planViewport.scrollWidth <= planViewport.clientWidth) return;
+
+      window.requestAnimationFrame(() => {
+        const targetLeft = (floorPlan.offsetWidth * 0.56) - (planViewport.clientWidth / 2);
+        const targetTop = (floorPlan.offsetHeight * 0.48) - (planViewport.clientHeight / 2);
+
+        planViewport.scrollLeft = Math.max(0, targetLeft);
+        planViewport.scrollTop = Math.max(0, targetTop);
+      });
+    }
+
+    function scrollSeatIntoView(seat) {
+      if (planViewport.scrollWidth <= planViewport.clientWidth) return;
+
+      const targetLeft = seat.offsetLeft - (planViewport.clientWidth / 2);
+      const targetTop = seat.offsetTop - (planViewport.clientHeight / 2);
+
+      planViewport.scrollTo({
+        left: Math.max(0, targetLeft),
+        top: Math.max(0, targetTop),
+        behavior: "smooth"
+      });
     }
 
   </script>
