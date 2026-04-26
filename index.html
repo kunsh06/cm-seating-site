@@ -295,7 +295,7 @@
       border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.14);
       background: #0b1924;
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 5 / 6;
       min-height: 0;
     }
 
@@ -455,9 +455,9 @@
       }
 
       .floor-plan {
-        width: 720px;
+        width: 680px;
         max-width: none;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 5 / 6;
         border: 0;
         border-radius: 0;
       }
@@ -523,7 +523,7 @@
       }
 
       .floor-plan {
-        width: 660px;
+        width: 640px;
       }
 
     }
@@ -540,7 +540,7 @@
       }
 
       .floor-plan {
-        width: 620px;
+        width: 600px;
       }
     }
   </style>
@@ -560,7 +560,7 @@
         <p class="panel-label">Find your seat</p>
         <h2>Enter your name</h2>
         <p class="search-copy">
-          Type part or all of your name to locate your assigned table and exact seat on the banquet floor plan.
+          Type part or all of your name to locate your assigned table and exact seat across 15 banquet tables.
         </p>
 
         <form class="search-form" id="seatSearchForm">
@@ -576,7 +576,7 @@
         </div>
 
         <div class="sample-list">
-          <strong>Sample names:</strong> Person 1, Person 8, Person 24, Person 57, Person 80
+          <strong>Sample names:</strong> Person 1, Person 24, Person 64, Person 96, Person 120
         </div>
       </aside>
 
@@ -592,7 +592,7 @@
         <div class="plan-viewport" id="planViewport">
           <div class="floor-plan" id="floorPlan">
             <!-- Seat dots are positioned as percentages over this layout image. -->
-            <img id="floorPlanImage" src="layout.png" alt="Banquet floor plan with tables and seating overlay" />
+            <img id="floorPlanImage" alt="Banquet floor plan with fifteen tables and seating overlay" />
           </div>
         </div>
       </section>
@@ -601,7 +601,8 @@
 
   <script>
     // Guest data stays in one array so it can be replaced with the final banquet roster.
-    const guests = Array.from({ length: 80 }, (_, index) => {
+    // 15 tables x 8 seats = 120 guests.
+    const guests = Array.from({ length: 120 }, (_, index) => {
       const guestNumber = index + 1;
       return {
         name: `Person ${guestNumber}`,
@@ -610,45 +611,51 @@
       };
     });
 
-    // Table center points are percentages of the colored layout.png.
-    // The image includes a left key panel, so these x/y values are based on the full square image.
+    // Table center points are percentages of the portrait banquet layout.
+    // Adjust these values if the production image changes.
     const tableCenters = {
-      T1: { x: 34.7, y: 24.5 },
-      T2: { x: 56.5, y: 24.5 },
-      T3: { x: 77.2, y: 24.5 },
-      T4: { x: 41.2, y: 45.5 },
-      T5: { x: 49.9, y: 55.0 },
-      T6: { x: 62.5, y: 55.0 },
-      T7: { x: 70.0, y: 45.5 },
-      T8: { x: 37.0, y: 67.8 },
-      T9: { x: 56.5, y: 72.1 },
-      T10: { x: 77.0, y: 67.8 }
+      T1: { x: 22.6, y: 20.3 },
+      T2: { x: 35.8, y: 27.3 },
+      T3: { x: 31.8, y: 41.0 },
+      T4: { x: 50.2, y: 31.6 },
+      T5: { x: 64.8, y: 31.6 },
+      T6: { x: 76.7, y: 20.3 },
+      T7: { x: 50.2, y: 44.2 },
+      T8: { x: 66.4, y: 41.6 },
+      T9: { x: 18.4, y: 59.4 },
+      T10: { x: 32.2, y: 54.4 },
+      T11: { x: 50.0, y: 59.7 },
+      T12: { x: 66.4, y: 54.4 },
+      T13: { x: 30.0, y: 68.9 },
+      T14: { x: 64.0, y: 68.9 },
+      T15: { x: 80.2, y: 59.4 }
     };
 
     // Seat offsets form a scalable pattern for 8 chairs around each round table.
     // For pixel-perfect placement, override any generated seat below in customSeatCoordinates.
     const seatOffsets = {
-      1: { x: 0, y: -5.2 },
-      2: { x: 4.0, y: -3.8 },
-      3: { x: 5.3, y: 0 },
-      4: { x: 4.0, y: 3.8 },
-      5: { x: 0, y: 5.2 },
-      6: { x: -4.0, y: 3.8 },
-      7: { x: -5.3, y: 0 },
-      8: { x: -4.0, y: -3.8 }
+      1: { x: 0, y: -4.5 },
+      2: { x: 4.0, y: -3.2 },
+      3: { x: 4.9, y: 0 },
+      4: { x: 4.0, y: 3.2 },
+      5: { x: 0, y: 4.5 },
+      6: { x: -4.0, y: 3.2 },
+      7: { x: -4.9, y: 0 },
+      8: { x: -4.0, y: -3.2 }
     };
 
-    // Example exact-position overrides. Add more entries like "T3-4": { x: 81.2, y: 28.3 } later.
+    // Example exact-position overrides. Add more entries like "T12-4": { x: 70.4, y: 57.6 } later.
     const customSeatCoordinates = {
-      "T1-1": { x: 34.7, y: 19.3 },
-      "T1-2": { x: 38.8, y: 20.7 },
-      "T1-3": { x: 40.0, y: 24.5 },
-      "T2-1": { x: 56.5, y: 19.4 },
-      "T5-8": { x: 45.8, y: 51.2 },
-      "T10-5": { x: 77.0, y: 73.1 }
+      "T1-1": { x: 22.6, y: 15.8 },
+      "T1-2": { x: 26.6, y: 17.1 },
+      "T1-3": { x: 27.5, y: 20.3 },
+      "T6-1": { x: 76.7, y: 15.8 },
+      "T9-8": { x: 14.4, y: 56.2 },
+      "T15-5": { x: 80.2, y: 63.9 }
     };
 
     const floorPlan = document.querySelector("#floorPlan");
+    const floorPlanImage = document.querySelector("#floorPlanImage");
     const planViewport = document.querySelector("#planViewport");
     const resultPanel = document.querySelector("#resultPanel");
     const searchForm = document.querySelector("#seatSearchForm");
@@ -656,6 +663,7 @@
 
     let activeSeatId = null;
 
+    floorPlanImage.src = createFifteenTableLayoutImage();
     renderSeatOverlay();
     centerMapOnSeatingArea();
 
@@ -812,8 +820,8 @@
       if (planViewport.scrollWidth <= planViewport.clientWidth) return;
 
       window.requestAnimationFrame(() => {
-        const targetLeft = (floorPlan.offsetWidth * 0.56) - (planViewport.clientWidth / 2);
-        const targetTop = (floorPlan.offsetHeight * 0.48) - (planViewport.clientHeight / 2);
+        const targetLeft = (floorPlan.offsetWidth * 0.5) - (planViewport.clientWidth / 2);
+        const targetTop = (floorPlan.offsetHeight * 0.42) - (planViewport.clientHeight / 2);
 
         planViewport.scrollLeft = Math.max(0, targetLeft);
         planViewport.scrollTop = Math.max(0, targetTop);
@@ -831,6 +839,115 @@
         top: Math.max(0, targetTop),
         behavior: "smooth"
       });
+    }
+
+    function createFifteenTableLayoutImage() {
+      const tables = Object.entries(tableCenters)
+        .map(([table, center]) => createTableSvg(table, center))
+        .join("");
+
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1200">
+          <defs>
+            <linearGradient id="roomBg" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#202326"/>
+              <stop offset="0.5" stop-color="#181a1c"/>
+              <stop offset="1" stop-color="#101214"/>
+            </linearGradient>
+            <linearGradient id="stageWood" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0" stop-color="#6b4a31"/>
+              <stop offset="1" stop-color="#2d1d15"/>
+            </linearGradient>
+            <linearGradient id="tableTop" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#efefee"/>
+              <stop offset="1" stop-color="#b9b8b5"/>
+            </linearGradient>
+            <linearGradient id="chairTop" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#4a4c4e"/>
+              <stop offset="1" stop-color="#111315"/>
+            </linearGradient>
+            <pattern id="carpet" width="42" height="42" patternUnits="userSpaceOnUse">
+              <rect width="42" height="42" fill="#202224"/>
+              <path d="M0 21H42M21 0V42" stroke="#303336" stroke-width="1" opacity=".34"/>
+              <path d="M0 0L42 42M42 0L0 42" stroke="#272a2d" stroke-width=".8" opacity=".22"/>
+            </pattern>
+            <filter id="softShadow" x="-35%" y="-35%" width="170%" height="170%">
+              <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#000000" flood-opacity=".45"/>
+            </filter>
+          </defs>
+
+          <rect width="1000" height="1200" fill="#151719"/>
+          <path d="M52 338C88 145 260 22 500 22C740 22 912 145 948 338V600C910 760 810 855 690 905V1180H310V905C190 855 90 760 52 600Z" fill="url(#carpet)" stroke="#8f8f8c" stroke-width="8"/>
+          <path d="M73 323C126 151 278 48 500 48C722 48 874 151 927 323" fill="none" stroke="#d4d2cc" stroke-width="5" opacity=".82"/>
+          <path d="M52 604C83 753 178 843 315 894M948 604C917 753 822 843 685 894" fill="none" stroke="#d4d2cc" stroke-width="5" opacity=".72"/>
+
+          <g filter="url(#softShadow)">
+            <path d="M318 40H682V170L612 195H388L318 170Z" fill="url(#stageWood)" stroke="#a98762" stroke-width="3"/>
+            <rect x="402" y="52" width="196" height="78" rx="3" fill="#ebe9e5" stroke="#2a2a2a" stroke-width="4"/>
+            <rect x="468" y="122" width="66" height="42" rx="4" fill="#5f351c" stroke="#1a100c" stroke-width="3"/>
+            <line x1="501" y1="118" x2="501" y2="91" stroke="#070707" stroke-width="4"/>
+            <circle cx="501" cy="89" r="4" fill="#070707"/>
+            <circle cx="370" cy="102" r="24" fill="#2e7b20"/>
+            <circle cx="630" cy="102" r="24" fill="#2e7b20"/>
+          </g>
+
+          <g filter="url(#softShadow)">
+            <rect x="92" y="345" width="110" height="245" fill="#4e4e4c" stroke="#9a9a96" stroke-width="3"/>
+            <text x="147" y="424" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Empty</text>
+            <text x="147" y="454" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Space</text>
+            <text x="147" y="484" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Required</text>
+            <text x="147" y="514" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">by</text>
+            <text x="147" y="544" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Fire Dept.</text>
+
+            <rect x="798" y="345" width="110" height="245" fill="#4e4e4c" stroke="#9a9a96" stroke-width="3"/>
+            <text x="853" y="424" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Empty</text>
+            <text x="853" y="454" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Space</text>
+            <text x="853" y="484" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Required</text>
+            <text x="853" y="514" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">by</text>
+            <text x="853" y="544" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Fire Dept.</text>
+          </g>
+
+          <g fill="none" stroke="#d4d2cc" stroke-width="4" opacity=".82">
+            <path d="M52 345H100V614H52M948 345H900V614H948"/>
+            <path d="M305 878H405V1180H305Z"/>
+            <path d="M405 878H586V1180H405Z"/>
+            <path d="M586 878H690V1180H586Z"/>
+            <path d="M330 980A72 72 0 0 1 258 908M475 1076A72 72 0 0 1 403 1004M595 980A72 72 0 0 0 667 908"/>
+          </g>
+
+          <rect x="595" y="213" width="72" height="54" fill="#5b4a38" stroke="#9a8266" stroke-width="3" filter="url(#softShadow)"/>
+          <circle cx="170" cy="800" r="22" fill="#2e7b20" opacity=".95"/>
+          <circle cx="820" cy="800" r="22" fill="#2e7b20" opacity=".95"/>
+
+          ${tables}
+        </svg>
+      `;
+
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+    }
+
+    function createTableSvg(table, center) {
+      const x = center.x * 10;
+      const y = center.y * 12;
+      const chairs = Object.values(seatOffsets).map((offset) => {
+        const chairX = offset.x * 10;
+        const chairY = offset.y * 12;
+        const rotation = Math.atan2(offset.y, offset.x) * (180 / Math.PI) + 90;
+
+        return `
+          <rect x="-12" y="-23" width="24" height="46" rx="8"
+            transform="translate(${chairX.toFixed(1)} ${chairY.toFixed(1)}) rotate(${rotation.toFixed(1)})"
+            fill="url(#chairTop)" stroke="#777" stroke-width="2"/>
+        `;
+      }).join("");
+
+      return `
+        <g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" filter="url(#softShadow)">
+          ${chairs}
+          <circle r="42" fill="url(#tableTop)" stroke="#1d1d1b" stroke-width="2"/>
+          <text y="11" fill="#111" font-family="Arial, sans-serif" font-size="31" font-weight="800" text-anchor="middle">${table}</text>
+        </g>
+      `;
     }
 
   </script>
