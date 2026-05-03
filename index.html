@@ -560,13 +560,13 @@
         <p class="panel-label">Find your seat</p>
         <h2>Enter your name</h2>
         <p class="search-copy">
-Enter your first or first and last name to find your assigned table and exact seat.
+          Type part or all of your name to locate your assigned table and exact seat across 15 banquet tables.
         </p>
 
         <form class="search-form" id="seatSearchForm">
-          <label for="guestName">Your Name</label>
+          <label for="guestName">Guest name</label>
           <div class="search-row">
-            <input id="guestName" type="search" autocomplete="name" placeholder="Example: Kunsh Bharadia" />
+            <input id="guestName" type="search" autocomplete="name" placeholder="Example: Vanessa Shusko" />
             <button type="submit">Search</button>
           </div>
         </form>
@@ -576,7 +576,7 @@ Enter your first or first and last name to find your assigned table and exact se
         </div>
 
         <div class="sample-list">
-          <strong>Sample names:</strong> Jose Martinez, Gurshaan Khara, Joshua Morales, Charlito Arriyo
+          <strong>Sample names:</strong> Vanessa Shusko, Mary Nguyen, Jack Xia, Jessica Albino, Brandon Cisneros
         </div>
       </aside>
 
@@ -600,16 +600,610 @@ Enter your first or first and last name to find your assigned table and exact se
   </main>
 
   <script>
-    // Guest data stays in one array so it can be replaced with the final banquet roster.
+    // Guest data from CM Banquet Seating Plan.xlsx.
     // 15 tables x 8 seats = 120 guests.
-    const guests = Array.from({ length: 120 }, (_, index) => {
-      const guestNumber = index + 1;
-      return {
-        name: `Person ${guestNumber}`,
-        table: `T${Math.ceil(guestNumber / 8)}`,
-        seat: ((guestNumber - 1) % 8) + 1
-      };
-    });
+    const guests = [
+      {
+            "name": "Industry Folk 1",
+            "table": "T1",
+            "seat": 1
+      },
+      {
+            "name": "Industry Folk 2",
+            "table": "T1",
+            "seat": 2
+      },
+      {
+            "name": "Industry Folk 3",
+            "table": "T1",
+            "seat": 3
+      },
+      {
+            "name": "Industry Folk 4",
+            "table": "T1",
+            "seat": 4
+      },
+      {
+            "name": "Industry Folk 5",
+            "table": "T1",
+            "seat": 5
+      },
+      {
+            "name": "Industry Folk 6",
+            "table": "T1",
+            "seat": 6
+      },
+      {
+            "name": "Industry Folk 7",
+            "table": "T1",
+            "seat": 7
+      },
+      {
+            "name": "Industry Folk 8",
+            "table": "T1",
+            "seat": 8
+      },
+      {
+            "name": "Vanessa Shusko",
+            "table": "T2",
+            "seat": 1
+      },
+      {
+            "name": "Gabriel Segura",
+            "table": "T2",
+            "seat": 2
+      },
+      {
+            "name": "Angel Pacheco",
+            "table": "T2",
+            "seat": 3
+      },
+      {
+            "name": "Joel Guzman",
+            "table": "T2",
+            "seat": 4
+      },
+      {
+            "name": "Jose Perez Cruz",
+            "table": "T2",
+            "seat": 5
+      },
+      {
+            "name": "Bryan Bejarano",
+            "table": "T2",
+            "seat": 6
+      },
+      {
+            "name": "Javier Mazaba-Guizar",
+            "table": "T2",
+            "seat": 7
+      },
+      {
+            "name": "Daniela Raya Hernandez",
+            "table": "T2",
+            "seat": 8
+      },
+      {
+            "name": "Tanvi Joshi",
+            "table": "T3",
+            "seat": 1
+      },
+      {
+            "name": "Jeannie Ortega Fuentes",
+            "table": "T3",
+            "seat": 2
+      },
+      {
+            "name": "Mary Nguyen",
+            "table": "T3",
+            "seat": 3
+      },
+      {
+            "name": "Juan Mesa",
+            "table": "T3",
+            "seat": 4
+      },
+      {
+            "name": "Rivka Napitupulu",
+            "table": "T3",
+            "seat": 5
+      },
+      {
+            "name": "Anthony Castaniero",
+            "table": "T3",
+            "seat": 6
+      },
+      {
+            "name": "Hayley Yang",
+            "table": "T3",
+            "seat": 7
+      },
+      {
+            "name": "Jian Pei Liang",
+            "table": "T3",
+            "seat": 8
+      },
+      {
+            "name": "Evelin De Leon Santos",
+            "table": "T4",
+            "seat": 1
+      },
+      {
+            "name": "Adrian Gonzalez Pulido",
+            "table": "T4",
+            "seat": 2
+      },
+      {
+            "name": "Siomara Sanchez",
+            "table": "T4",
+            "seat": 3
+      },
+      {
+            "name": "Edward Grajeda Chavez",
+            "table": "T4",
+            "seat": 4
+      },
+      {
+            "name": "Luke Pongetti",
+            "table": "T4",
+            "seat": 5
+      },
+      {
+            "name": "Lilly Tisza",
+            "table": "T4",
+            "seat": 6
+      },
+      {
+            "name": "Damien Votaw",
+            "table": "T4",
+            "seat": 7
+      },
+      {
+            "name": "Lijin Huang",
+            "table": "T4",
+            "seat": 8
+      },
+      {
+            "name": "Jack Xia",
+            "table": "T5",
+            "seat": 1
+      },
+      {
+            "name": "Keira Chi",
+            "table": "T5",
+            "seat": 2
+      },
+      {
+            "name": "Joshua Chan",
+            "table": "T5",
+            "seat": 3
+      },
+      {
+            "name": "Bryan Santamaria",
+            "table": "T5",
+            "seat": 4
+      },
+      {
+            "name": "Kiana Chi",
+            "table": "T5",
+            "seat": 5
+      },
+      {
+            "name": "Joshua Morales Garcia",
+            "table": "T5",
+            "seat": 6
+      },
+      {
+            "name": "Milad Qaqo",
+            "table": "T5",
+            "seat": 7
+      },
+      {
+            "name": "Galen Tang",
+            "table": "T5",
+            "seat": 8
+      },
+      {
+            "name": "Industry Folk 9",
+            "table": "T6",
+            "seat": 1
+      },
+      {
+            "name": "Industry Folk 10",
+            "table": "T6",
+            "seat": 2
+      },
+      {
+            "name": "Industry Folk 11",
+            "table": "T6",
+            "seat": 3
+      },
+      {
+            "name": "Industry Folk 12",
+            "table": "T6",
+            "seat": 4
+      },
+      {
+            "name": "Industry Folk 13",
+            "table": "T6",
+            "seat": 5
+      },
+      {
+            "name": "Industry Folk 14",
+            "table": "T6",
+            "seat": 6
+      },
+      {
+            "name": "Industry Folk 15",
+            "table": "T6",
+            "seat": 7
+      },
+      {
+            "name": "Industry Folk 16",
+            "table": "T6",
+            "seat": 8
+      },
+      {
+            "name": "Sait Jijon",
+            "table": "T7",
+            "seat": 1
+      },
+      {
+            "name": "Khadijah Muhammad",
+            "table": "T7",
+            "seat": 2
+      },
+      {
+            "name": "Varsha Thummaty",
+            "table": "T7",
+            "seat": 3
+      },
+      {
+            "name": "Jose Enriquez-Escobedo",
+            "table": "T7",
+            "seat": 4
+      },
+      {
+            "name": "Jessica Albino",
+            "table": "T7",
+            "seat": 5
+      },
+      {
+            "name": "Andrea Tenorio",
+            "table": "T7",
+            "seat": 6
+      },
+      {
+            "name": "Arsani Gad",
+            "table": "T7",
+            "seat": 7
+      },
+      {
+            "name": "Lucas Gribi",
+            "table": "T7",
+            "seat": 8
+      },
+      {
+            "name": "Diego Gamboa",
+            "table": "T8",
+            "seat": 1
+      },
+      {
+            "name": "Jose Martinez Lopez",
+            "table": "T8",
+            "seat": 2
+      },
+      {
+            "name": "Stephanie Ng",
+            "table": "T8",
+            "seat": 3
+      },
+      {
+            "name": "Elvia Bacilio",
+            "table": "T8",
+            "seat": 4
+      },
+      {
+            "name": "Isidro Valdez Lopez",
+            "table": "T8",
+            "seat": 5
+      },
+      {
+            "name": "Kimberly Veronica",
+            "table": "T8",
+            "seat": 6
+      },
+      {
+            "name": "Arlynn",
+            "table": "T8",
+            "seat": 7
+      },
+      {
+            "name": "Melina Rodriguez",
+            "table": "T8",
+            "seat": 8
+      },
+      {
+            "name": "Industry Folk 17",
+            "table": "T9",
+            "seat": 1
+      },
+      {
+            "name": "Industry Folk 18",
+            "table": "T9",
+            "seat": 2
+      },
+      {
+            "name": "Industry Folk 19",
+            "table": "T9",
+            "seat": 3
+      },
+      {
+            "name": "Industry Folk 20",
+            "table": "T9",
+            "seat": 4
+      },
+      {
+            "name": "Industry Folk 21",
+            "table": "T9",
+            "seat": 5
+      },
+      {
+            "name": "Industry Folk 22",
+            "table": "T9",
+            "seat": 6
+      },
+      {
+            "name": "Industry Folk 23",
+            "table": "T9",
+            "seat": 7
+      },
+      {
+            "name": "Industry Folk 24",
+            "table": "T9",
+            "seat": 8
+      },
+      {
+            "name": "Brandon Cisneros",
+            "table": "T10",
+            "seat": 1
+      },
+      {
+            "name": "Jonathan Arroyo",
+            "table": "T10",
+            "seat": 2
+      },
+      {
+            "name": "Brisny Argueta Balan",
+            "table": "T10",
+            "seat": 3
+      },
+      {
+            "name": "Angel Hernandez Moya",
+            "table": "T10",
+            "seat": 4
+      },
+      {
+            "name": "John Lund",
+            "table": "T10",
+            "seat": 5
+      },
+      {
+            "name": "fabricio Guzman Barreras",
+            "table": "T10",
+            "seat": 6
+      },
+      {
+            "name": "Alondra Zermeno",
+            "table": "T10",
+            "seat": 7
+      },
+      {
+            "name": "Gracie Kallstrom",
+            "table": "T10",
+            "seat": 8
+      },
+      {
+            "name": "Enya Gan",
+            "table": "T11",
+            "seat": 1
+      },
+      {
+            "name": "Alexander Hu",
+            "table": "T11",
+            "seat": 2
+      },
+      {
+            "name": "Kyle Fong",
+            "table": "T11",
+            "seat": 3
+      },
+      {
+            "name": "Cassie blaufuss",
+            "table": "T11",
+            "seat": 4
+      },
+      {
+            "name": "Fatima Ojeda",
+            "table": "T11",
+            "seat": 5
+      },
+      {
+            "name": "Britney Jade Cantor",
+            "table": "T11",
+            "seat": 6
+      },
+      {
+            "name": "Nitika Sathiya",
+            "table": "T11",
+            "seat": 7
+      },
+      {
+            "name": "Kristen Luna Valladolid",
+            "table": "T11",
+            "seat": 8
+      },
+      {
+            "name": "No Person 1",
+            "table": "T12",
+            "seat": 1
+      },
+      {
+            "name": "Bestabeth Cacho-Lopez",
+            "table": "T12",
+            "seat": 2
+      },
+      {
+            "name": "Guadalupe Flores Serrano",
+            "table": "T12",
+            "seat": 3
+      },
+      {
+            "name": "Aland Chi",
+            "table": "T12",
+            "seat": 4
+      },
+      {
+            "name": "Sophia Bucholtz Truong",
+            "table": "T12",
+            "seat": 5
+      },
+      {
+            "name": "Angel Jauregui",
+            "table": "T12",
+            "seat": 6
+      },
+      {
+            "name": "Genesis Patiño-Salgado",
+            "table": "T12",
+            "seat": 7
+      },
+      {
+            "name": "Edwin Aguirre",
+            "table": "T12",
+            "seat": 8
+      },
+      {
+            "name": "Industry Folk 25",
+            "table": "T13",
+            "seat": 1
+      },
+      {
+            "name": "Industry Folk 26",
+            "table": "T13",
+            "seat": 2
+      },
+      {
+            "name": "Industry Folk 27",
+            "table": "T13",
+            "seat": 3
+      },
+      {
+            "name": "Industry Folk 28",
+            "table": "T13",
+            "seat": 4
+      },
+      {
+            "name": "Industry Folk 29",
+            "table": "T13",
+            "seat": 5
+      },
+      {
+            "name": "Industry Folk 30",
+            "table": "T13",
+            "seat": 6
+      },
+      {
+            "name": "Industry Folk 31",
+            "table": "T13",
+            "seat": 7
+      },
+      {
+            "name": "Industry Folk 32",
+            "table": "T13",
+            "seat": 8
+      },
+      {
+            "name": "Industry Folk 33",
+            "table": "T14",
+            "seat": 1
+      },
+      {
+            "name": "Industry Folk 34",
+            "table": "T14",
+            "seat": 2
+      },
+      {
+            "name": "Industry Folk 35",
+            "table": "T14",
+            "seat": 3
+      },
+      {
+            "name": "Industry Folk 36",
+            "table": "T14",
+            "seat": 4
+      },
+      {
+            "name": "Industry Folk 37",
+            "table": "T14",
+            "seat": 5
+      },
+      {
+            "name": "Industry Folk 38",
+            "table": "T14",
+            "seat": 6
+      },
+      {
+            "name": "Industry Folk 39",
+            "table": "T14",
+            "seat": 7
+      },
+      {
+            "name": "Industry Folk 40",
+            "table": "T14",
+            "seat": 8
+      },
+      {
+            "name": "Industry Folk 41",
+            "table": "T15",
+            "seat": 1
+      },
+      {
+            "name": "Industry Folk 42",
+            "table": "T15",
+            "seat": 2
+      },
+      {
+            "name": "Industry Folk 43",
+            "table": "T15",
+            "seat": 3
+      },
+      {
+            "name": "Industry Folk 44",
+            "table": "T15",
+            "seat": 4
+      },
+      {
+            "name": "Industry Folk 45",
+            "table": "T15",
+            "seat": 5
+      },
+      {
+            "name": "Industry Folk 46",
+            "table": "T15",
+            "seat": 6
+      },
+      {
+            "name": "Industry Folk 47",
+            "table": "T15",
+            "seat": 7
+      },
+      {
+            "name": "Industry Folk 48",
+            "table": "T15",
+            "seat": 8
+      }
+    ];
 
     // Table center points are percentages of the portrait banquet layout.
     // Adjust these values if the production image changes.
