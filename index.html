@@ -295,7 +295,7 @@
       border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.14);
       background: #0b1924;
-      aspect-ratio: 5 / 6;
+      aspect-ratio: 1000 / 1280;
       min-height: 0;
     }
 
@@ -312,12 +312,12 @@
       width: clamp(13px, 1.7vw, 20px);
       height: clamp(13px, 1.7vw, 20px);
       min-width: 0;
-      border: 1px solid rgba(255, 255, 255, 0.58);
+      border: 0;
       border-radius: 50%;
       padding: 0;
       color: transparent;
-      background: rgba(255, 255, 255, 0.64);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      background: transparent;
+      box-shadow: none;
       appearance: none;
       line-height: 0;
       transform: translate(-50%, -50%);
@@ -325,7 +325,8 @@
     }
 
     .seat:hover {
-      background: #fff;
+      border: 1px solid rgba(255, 226, 154, 0.7);
+      background: rgba(255, 226, 154, 0.45);
       transform: translate(-50%, -50%);
     }
 
@@ -455,9 +456,9 @@
       }
 
       .floor-plan {
-        width: 680px;
+        width: 100%;
         max-width: none;
-        aspect-ratio: 5 / 6;
+        aspect-ratio: 1000 / 1280;
         border: 0;
         border-radius: 0;
       }
@@ -523,7 +524,7 @@
       }
 
       .floor-plan {
-        width: 640px;
+        width: 100%;
       }
 
     }
@@ -540,7 +541,7 @@
       }
 
       .floor-plan {
-        width: 600px;
+        width: 100%;
       }
     }
   </style>
@@ -548,7 +549,7 @@
 <body>
   <main class="page">
     <header class="topbar" aria-label="Event header">
-      <img class="logo" src="logo.jpg" alt="UC Davis Construction Management logo" />
+      <img class="logo" src="logo.png" alt="UC Davis Construction Management logo" />
       <div>
         <p class="event-kicker">UC Davis Construction Management</p>
         <h1 class="event-title">Banquet Seating</h1>
@@ -560,13 +561,13 @@
         <p class="panel-label">Find your seat</p>
         <h2>Enter your name</h2>
         <p class="search-copy">
-          Type part or all of your name to locate your assigned table and exact seat across 15 banquet tables.
+          Type part or all of your name to locate your assigned table and exact seat on the latest banquet layout.
         </p>
 
         <form class="search-form" id="seatSearchForm">
           <label for="guestName">Guest name</label>
           <div class="search-row">
-            <input id="guestName" type="search" autocomplete="name" placeholder="Example: Vanessa Shusko" />
+            <input id="guestName" type="search" autocomplete="name" placeholder="Example: Genesis Patiño-Salgado" />
             <button type="submit">Search</button>
           </div>
         </form>
@@ -576,7 +577,7 @@
         </div>
 
         <div class="sample-list">
-          <strong>Sample names:</strong> Vanessa Shusko, Mary Nguyen, Jack Xia, Jessica Albino, Brandon Cisneros
+          <strong>Sample names:</strong> Genesis Patiño-Salgado, Jose Perez Cruz, Kiana Chi, Brandon Cisneros, Mary Jo Ford
         </div>
       </aside>
 
@@ -592,7 +593,7 @@
         <div class="plan-viewport" id="planViewport">
           <div class="floor-plan" id="floorPlan">
             <!-- Seat dots are positioned as percentages over this layout image. -->
-            <img id="floorPlanImage" alt="Banquet floor plan with fifteen tables and seating overlay" />
+            <img id="floorPlanImage" alt="Latest banquet floor plan with seating overlay" />
           </div>
         </div>
       </section>
@@ -600,291 +601,271 @@
   </main>
 
   <script>
-    // Guest data from CM Banquet Seating Plan.xlsx.
-    // 15 tables x 8 seats = 120 guests.
+    // Guest data from the latest pasted roster.
+    // Seat numbers are assigned in the order names appear within each table.
     const guests = [
       {
-            "name": "Industry Folk 1",
-            "table": "T1",
+            "name": "Genesis Patiño-Salgado",
+            "table": "T7",
             "seat": 1
       },
       {
-            "name": "Industry Folk 2",
-            "table": "T1",
+            "name": "Miguel Jaller Martelo",
+            "table": "T7",
             "seat": 2
       },
       {
-            "name": "Industry Folk 3",
-            "table": "T1",
+            "name": "Caleb Keling",
+            "table": "T7",
             "seat": 3
       },
       {
-            "name": "Industry Folk 4",
-            "table": "T1",
+            "name": "Shuai Zhang",
+            "table": "T7",
             "seat": 4
       },
       {
-            "name": "Industry Folk 5",
-            "table": "T1",
+            "name": "Angel Hernandez Moya",
+            "table": "T7",
             "seat": 5
       },
       {
-            "name": "Industry Folk 6",
-            "table": "T1",
+            "name": "Damien Votaw alt",
+            "table": "T7",
             "seat": 6
       },
       {
-            "name": "Industry Folk 7",
-            "table": "T1",
+            "name": "Stephanie Ng",
+            "table": "T7",
             "seat": 7
       },
       {
-            "name": "Industry Folk 8",
-            "table": "T1",
-            "seat": 8
-      },
-      {
-            "name": "Vanessa Shusko",
-            "table": "T2",
+            "name": "Jose Perez Cruz",
+            "table": "T12",
             "seat": 1
       },
       {
             "name": "Gabriel Segura",
-            "table": "T2",
+            "table": "T12",
             "seat": 2
       },
       {
             "name": "Angel Pacheco",
-            "table": "T2",
+            "table": "T12",
             "seat": 3
       },
       {
             "name": "Joel Guzman",
-            "table": "T2",
+            "table": "T12",
             "seat": 4
       },
       {
-            "name": "Jose Perez Cruz",
-            "table": "T2",
+            "name": "Bryan Bejarano",
+            "table": "T12",
             "seat": 5
       },
       {
-            "name": "Bryan Bejarano",
-            "table": "T2",
+            "name": "George Romo",
+            "table": "T12",
             "seat": 6
       },
       {
-            "name": "Javier Mazaba-Guizar",
-            "table": "T2",
+            "name": "Brian Andrew",
+            "table": "T12",
             "seat": 7
       },
       {
-            "name": "Daniela Raya Hernandez",
-            "table": "T2",
+            "name": "Bryant Prieto",
+            "table": "T12",
             "seat": 8
       },
       {
-            "name": "Tanvi Joshi",
-            "table": "T3",
+            "name": "Rivka Napitupulu",
+            "table": "T6",
             "seat": 1
       },
       {
             "name": "Jeannie Ortega Fuentes",
-            "table": "T3",
+            "table": "T6",
             "seat": 2
       },
       {
             "name": "Mary Nguyen",
-            "table": "T3",
+            "table": "T6",
             "seat": 3
       },
       {
             "name": "Juan Mesa",
-            "table": "T3",
+            "table": "T6",
             "seat": 4
       },
       {
-            "name": "Rivka Napitupulu",
-            "table": "T3",
+            "name": "Tanvi Joshi",
+            "table": "T6",
             "seat": 5
       },
       {
             "name": "Anthony Castaniero",
-            "table": "T3",
+            "table": "T6",
             "seat": 6
       },
       {
-            "name": "Hayley Yang",
-            "table": "T3",
+            "name": "Kimberly Gage",
+            "table": "T6",
             "seat": 7
       },
       {
-            "name": "Jian Pei Liang",
-            "table": "T3",
+            "name": "Brent Birtcil",
+            "table": "T6",
             "seat": 8
       },
       {
-            "name": "Evelin De Leon Santos",
-            "table": "T4",
+            "name": "Luke Pongetti",
+            "table": "T1",
             "seat": 1
       },
       {
             "name": "Adrian Gonzalez Pulido",
-            "table": "T4",
+            "table": "T1",
             "seat": 2
       },
       {
             "name": "Siomara Sanchez",
-            "table": "T4",
+            "table": "T1",
             "seat": 3
       },
       {
             "name": "Edward Grajeda Chavez",
-            "table": "T4",
+            "table": "T1",
             "seat": 4
       },
       {
-            "name": "Luke Pongetti",
-            "table": "T4",
+            "name": "Evelin De Leon Santos",
+            "table": "T1",
             "seat": 5
       },
       {
             "name": "Lilly Tisza",
-            "table": "T4",
+            "table": "T1",
             "seat": 6
       },
       {
-            "name": "Damien Votaw",
-            "table": "T4",
+            "name": "Luis Jimenez",
+            "table": "T1",
             "seat": 7
       },
       {
-            "name": "Lijin Huang",
-            "table": "T4",
-            "seat": 8
-      },
-      {
-            "name": "Jack Xia",
-            "table": "T5",
+            "name": "Kiana Chi",
+            "table": "T14",
             "seat": 1
       },
       {
             "name": "Keira Chi",
-            "table": "T5",
+            "table": "T14",
             "seat": 2
       },
       {
             "name": "Joshua Chan",
-            "table": "T5",
+            "table": "T14",
             "seat": 3
       },
       {
             "name": "Bryan Santamaria",
-            "table": "T5",
+            "table": "T14",
             "seat": 4
       },
       {
-            "name": "Kiana Chi",
-            "table": "T5",
+            "name": "Jack Xia",
+            "table": "T14",
             "seat": 5
-      },
-      {
-            "name": "Joshua Morales Garcia",
-            "table": "T5",
-            "seat": 6
-      },
-      {
-            "name": "Milad Qaqo",
-            "table": "T5",
-            "seat": 7
       },
       {
             "name": "Galen Tang",
-            "table": "T5",
-            "seat": 8
-      },
-      {
-            "name": "Industry Folk 9",
-            "table": "T6",
-            "seat": 1
-      },
-      {
-            "name": "Industry Folk 10",
-            "table": "T6",
-            "seat": 2
-      },
-      {
-            "name": "Industry Folk 11",
-            "table": "T6",
-            "seat": 3
-      },
-      {
-            "name": "Industry Folk 12",
-            "table": "T6",
-            "seat": 4
-      },
-      {
-            "name": "Industry Folk 13",
-            "table": "T6",
-            "seat": 5
-      },
-      {
-            "name": "Industry Folk 14",
-            "table": "T6",
+            "table": "T14",
             "seat": 6
       },
       {
-            "name": "Industry Folk 15",
-            "table": "T6",
+            "name": "Stephanie Smith",
+            "table": "T14",
             "seat": 7
       },
       {
-            "name": "Industry Folk 16",
-            "table": "T6",
+            "name": "Dave Olivas",
+            "table": "T14",
             "seat": 8
       },
       {
-            "name": "Sait Jijon",
-            "table": "T7",
+            "name": "John Harvey",
+            "table": "T2",
             "seat": 1
       },
       {
-            "name": "Khadijah Muhammad",
-            "table": "T7",
+            "name": "Arsani Gad",
+            "table": "T2",
             "seat": 2
       },
       {
+            "name": "Miland Qaqo",
+            "table": "T2",
+            "seat": 3
+      },
+      {
+            "name": "Hayley Yang",
+            "table": "T2",
+            "seat": 4
+      },
+      {
+            "name": "Aaron Schwartz",
+            "table": "T2",
+            "seat": 5
+      },
+      {
+            "name": "Ashely Lasiter",
+            "table": "T2",
+            "seat": 6
+      },
+      {
+            "name": "Jessica Albino",
+            "table": "T13",
+            "seat": 1
+      },
+      {
             "name": "Varsha Thummaty",
-            "table": "T7",
+            "table": "T13",
+            "seat": 2
+      },
+      {
+            "name": "Khadijah Muhammad",
+            "table": "T13",
             "seat": 3
       },
       {
             "name": "Jose Enriquez-Escobedo",
-            "table": "T7",
+            "table": "T13",
             "seat": 4
       },
       {
-            "name": "Jessica Albino",
-            "table": "T7",
+            "name": "Sait Jijon",
+            "table": "T13",
             "seat": 5
       },
       {
             "name": "Andrea Tenorio",
-            "table": "T7",
+            "table": "T13",
             "seat": 6
       },
       {
-            "name": "Arsani Gad",
-            "table": "T7",
+            "name": "Lucas Gribi",
+            "table": "T13",
             "seat": 7
       },
       {
-            "name": "Lucas Gribi",
-            "table": "T7",
+            "name": "Craig Valdez",
+            "table": "T13",
             "seat": 8
       },
       {
-            "name": "Diego Gamboa",
+            "name": "Isidro Valdez Lopez",
             "table": "T8",
             "seat": 1
       },
@@ -894,7 +875,7 @@
             "seat": 2
       },
       {
-            "name": "Stephanie Ng",
+            "name": "Melina Rodriguez",
             "table": "T8",
             "seat": 3
       },
@@ -904,7 +885,7 @@
             "seat": 4
       },
       {
-            "name": "Isidro Valdez Lopez",
+            "name": "Diego Gamboa",
             "table": "T8",
             "seat": 5
       },
@@ -914,97 +895,82 @@
             "seat": 6
       },
       {
-            "name": "Arlynn",
+            "name": "Tony Gonzalez",
             "table": "T8",
             "seat": 7
       },
       {
-            "name": "Melina Rodriguez",
-            "table": "T8",
-            "seat": 8
-      },
-      {
-            "name": "Industry Folk 17",
-            "table": "T9",
+            "name": "Paul Martin",
+            "table": "T10",
             "seat": 1
       },
       {
-            "name": "Industry Folk 18",
-            "table": "T9",
+            "name": "Jian pei Liang",
+            "table": "T10",
             "seat": 2
       },
       {
-            "name": "Industry Folk 19",
-            "table": "T9",
+            "name": "Nitika Sathiya",
+            "table": "T10",
             "seat": 3
       },
       {
-            "name": "Industry Folk 20",
-            "table": "T9",
+            "name": "Jessica Van Strander",
+            "table": "T10",
             "seat": 4
       },
       {
-            "name": "Industry Folk 21",
-            "table": "T9",
-            "seat": 5
-      },
-      {
-            "name": "Industry Folk 22",
-            "table": "T9",
-            "seat": 6
-      },
-      {
-            "name": "Industry Folk 23",
-            "table": "T9",
-            "seat": 7
-      },
-      {
-            "name": "Industry Folk 24",
-            "table": "T9",
-            "seat": 8
-      },
-      {
-            "name": "Brandon Cisneros",
+            "name": "Rebecca Sandager",
             "table": "T10",
-            "seat": 1
+            "seat": 5
       },
       {
             "name": "Jonathan Arroyo",
             "table": "T10",
-            "seat": 2
-      },
-      {
-            "name": "Brisny Argueta Balan",
-            "table": "T10",
-            "seat": 3
-      },
-      {
-            "name": "Angel Hernandez Moya",
-            "table": "T10",
-            "seat": 4
-      },
-      {
-            "name": "John Lund",
-            "table": "T10",
-            "seat": 5
-      },
-      {
-            "name": "fabricio Guzman Barreras",
-            "table": "T10",
             "seat": 6
       },
       {
-            "name": "Alondra Zermeno",
+            "name": "Arlynn Mejia",
             "table": "T10",
             "seat": 7
       },
       {
-            "name": "Gracie Kallstrom",
-            "table": "T10",
-            "seat": 8
+            "name": "John Lund",
+            "table": "T3",
+            "seat": 1
       },
       {
-            "name": "Enya Gan",
+            "name": "Brisny Argueta Balan",
+            "table": "T3",
+            "seat": 2
+      },
+      {
+            "name": "Brandon Cisneros",
+            "table": "T3",
+            "seat": 3
+      },
+      {
+            "name": "Fabrizio Guzman Barreras",
+            "table": "T3",
+            "seat": 4
+      },
+      {
+            "name": "Alondra Zermeno",
+            "table": "T3",
+            "seat": 5
+      },
+      {
+            "name": "Gracie Kallstrom",
+            "table": "T3",
+            "seat": 6
+      },
+      {
+            "name": "Boone Ferrier",
+            "table": "T3",
+            "seat": 7
+      },
+      {
+            "name": "Fatima Ojeda",
             "table": "T11",
             "seat": 1
       },
@@ -1019,234 +985,140 @@
             "seat": 3
       },
       {
-            "name": "Cassie blaufuss",
+            "name": "Cassie Blaufuss",
             "table": "T11",
             "seat": 4
-      },
-      {
-            "name": "Fatima Ojeda",
-            "table": "T11",
-            "seat": 5
-      },
-      {
-            "name": "Britney Jade Cantor",
-            "table": "T11",
-            "seat": 6
-      },
-      {
-            "name": "Nitika Sathiya",
-            "table": "T11",
-            "seat": 7
       },
       {
             "name": "Kristen Luna Valladolid",
             "table": "T11",
-            "seat": 8
+            "seat": 5
       },
       {
-            "name": "No Person 1",
-            "table": "T12",
+            "name": "Shen Huot",
+            "table": "T11",
+            "seat": 6
+      },
+      {
+            "name": "Enya Gan",
+            "table": "T11",
+            "seat": 7
+      },
+      {
+            "name": "Ema Maeda",
+            "table": "T4",
             "seat": 1
       },
       {
             "name": "Bestabeth Cacho-Lopez",
-            "table": "T12",
+            "table": "T4",
             "seat": 2
-      },
-      {
-            "name": "Guadalupe Flores Serrano",
-            "table": "T12",
-            "seat": 3
       },
       {
             "name": "Aland Chi",
-            "table": "T12",
-            "seat": 4
+            "table": "T4",
+            "seat": 3
       },
       {
             "name": "Sophia Bucholtz Truong",
-            "table": "T12",
-            "seat": 5
+            "table": "T4",
+            "seat": 4
       },
       {
             "name": "Angel Jauregui",
-            "table": "T12",
-            "seat": 6
-      },
-      {
-            "name": "Genesis Patiño-Salgado",
-            "table": "T12",
-            "seat": 7
+            "table": "T4",
+            "seat": 5
       },
       {
             "name": "Edwin Aguirre",
-            "table": "T12",
-            "seat": 8
-      },
-      {
-            "name": "Industry Folk 25",
-            "table": "T13",
-            "seat": 1
-      },
-      {
-            "name": "Industry Folk 26",
-            "table": "T13",
-            "seat": 2
-      },
-      {
-            "name": "Industry Folk 27",
-            "table": "T13",
-            "seat": 3
-      },
-      {
-            "name": "Industry Folk 28",
-            "table": "T13",
-            "seat": 4
-      },
-      {
-            "name": "Industry Folk 29",
-            "table": "T13",
-            "seat": 5
-      },
-      {
-            "name": "Industry Folk 30",
-            "table": "T13",
+            "table": "T4",
             "seat": 6
       },
       {
-            "name": "Industry Folk 31",
-            "table": "T13",
+            "name": "Jack Nakamura",
+            "table": "T4",
             "seat": 7
       },
       {
-            "name": "Industry Folk 32",
-            "table": "T13",
+            "name": "Andrew Vander Weide",
+            "table": "T4",
             "seat": 8
       },
       {
-            "name": "Industry Folk 33",
-            "table": "T14",
+            "name": "Mary Jo Ford",
+            "table": "T5",
             "seat": 1
       },
       {
-            "name": "Industry Folk 34",
-            "table": "T14",
+            "name": "Daniela Raya Hernandez",
+            "table": "T5",
             "seat": 2
       },
       {
-            "name": "Industry Folk 35",
-            "table": "T14",
+            "name": "Michael Lindquist",
+            "table": "T5",
             "seat": 3
       },
       {
-            "name": "Industry Folk 36",
-            "table": "T14",
+            "name": "Sihaya Clifford",
+            "table": "T5",
             "seat": 4
       },
       {
-            "name": "Industry Folk 37",
-            "table": "T14",
+            "name": "Estrella Lopez",
+            "table": "T5",
             "seat": 5
       },
       {
-            "name": "Industry Folk 38",
-            "table": "T14",
+            "name": "Joseph Trujillo",
+            "table": "T5",
             "seat": 6
       },
       {
-            "name": "Industry Folk 39",
-            "table": "T14",
+            "name": "Lijin Huang",
+            "table": "T5",
             "seat": 7
-      },
-      {
-            "name": "Industry Folk 40",
-            "table": "T14",
-            "seat": 8
-      },
-      {
-            "name": "Industry Folk 41",
-            "table": "T15",
-            "seat": 1
-      },
-      {
-            "name": "Industry Folk 42",
-            "table": "T15",
-            "seat": 2
-      },
-      {
-            "name": "Industry Folk 43",
-            "table": "T15",
-            "seat": 3
-      },
-      {
-            "name": "Industry Folk 44",
-            "table": "T15",
-            "seat": 4
-      },
-      {
-            "name": "Industry Folk 45",
-            "table": "T15",
-            "seat": 5
-      },
-      {
-            "name": "Industry Folk 46",
-            "table": "T15",
-            "seat": 6
-      },
-      {
-            "name": "Industry Folk 47",
-            "table": "T15",
-            "seat": 7
-      },
-      {
-            "name": "Industry Folk 48",
-            "table": "T15",
-            "seat": 8
       }
     ];
 
     // Table center points are percentages of the portrait banquet layout.
     // Adjust these values if the production image changes.
     const tableCenters = {
-      T1: { x: 22.6, y: 20.3 },
-      T2: { x: 35.8, y: 27.3 },
-      T3: { x: 31.8, y: 41.0 },
-      T4: { x: 50.2, y: 31.6 },
-      T5: { x: 64.8, y: 31.6 },
-      T6: { x: 76.7, y: 20.3 },
-      T7: { x: 50.2, y: 44.2 },
-      T8: { x: 66.4, y: 41.6 },
-      T9: { x: 18.4, y: 59.4 },
-      T10: { x: 32.2, y: 54.4 },
-      T11: { x: 50.0, y: 59.7 },
-      T12: { x: 66.4, y: 54.4 },
-      T13: { x: 30.0, y: 68.9 },
-      T14: { x: 64.0, y: 68.9 },
-      T15: { x: 80.2, y: 59.4 }
+      T1: { x: 20.7, y: 22.4 },
+      T2: { x: 35.4, y: 29.9 },
+      T3: { x: 32.0, y: 43.7 },
+      T4: { x: 50.2, y: 33.1 },
+      T5: { x: 65.5, y: 33.1 },
+      T6: { x: 78.1, y: 22.4 },
+      T7: { x: 50.0, y: 46.0 },
+      T8: { x: 65.5, y: 43.7 },
+      T10: { x: 32.9, y: 52.8 },
+      T11: { x: 50.0, y: 57.4 },
+      T12: { x: 65.5, y: 52.8 },
+      T13: { x: 32.9, y: 66.0 },
+      T14: { x: 65.5, y: 66.0 }
     };
 
     // Seat offsets form a scalable pattern for 8 chairs around each round table.
     // For pixel-perfect placement, override any generated seat below in customSeatCoordinates.
     const seatOffsets = {
-      1: { x: 0, y: -4.5 },
-      2: { x: 4.0, y: -3.2 },
-      3: { x: 4.9, y: 0 },
-      4: { x: 4.0, y: 3.2 },
-      5: { x: 0, y: 4.5 },
-      6: { x: -4.0, y: 3.2 },
-      7: { x: -4.9, y: 0 },
-      8: { x: -4.0, y: -3.2 }
+      1: { x: 0, y: -3.8 },
+      2: { x: 3.8, y: -2.7 },
+      3: { x: 4.7, y: 0 },
+      4: { x: 3.8, y: 2.7 },
+      5: { x: 0, y: 3.8 },
+      6: { x: -3.8, y: 2.7 },
+      7: { x: -4.7, y: 0 },
+      8: { x: -3.8, y: -2.7 }
     };
 
     // Example exact-position overrides. Add more entries like "T12-4": { x: 70.4, y: 57.6 } later.
-    const customSeatCoordinates = {
-      "T1-1": { x: 22.6, y: 15.8 },
-      "T1-2": { x: 26.6, y: 17.1 },
-      "T1-3": { x: 27.5, y: 20.3 },
-      "T6-1": { x: 76.7, y: 15.8 },
-      "T9-8": { x: 14.4, y: 56.2 },
-      "T15-5": { x: 80.2, y: 63.9 }
-    };
+    const customSeatCoordinates = {};
+
+    const guestCountsByTable = guests.reduce((counts, guest) => {
+      counts[guest.table] = Math.max(counts[guest.table] || 0, guest.seat);
+      return counts;
+    }, {});
 
     const floorPlan = document.querySelector("#floorPlan");
     const floorPlanImage = document.querySelector("#floorPlanImage");
@@ -1257,7 +1129,8 @@
 
     let activeSeatId = null;
 
-    floorPlanImage.src = createFifteenTableLayoutImage();
+    floorPlanImage.src = createLatestTableLayoutImage();
+
     renderSeatOverlay();
     centerMapOnSeatingArea();
 
@@ -1359,38 +1232,35 @@
       seat.classList.add("is-active");
       activeSeatId = seatId;
       scrollSeatIntoView(seat);
+      seat.scrollIntoView({
+        behavior: "auto",
+        block: "center",
+        inline: "center"
+      });
     }
 
     function renderSeatOverlay() {
-      Object.keys(tableCenters).forEach((table) => {
-        for (let seatNumber = 1; seatNumber <= 8; seatNumber += 1) {
-          const seatId = `${table}-${seatNumber}`;
-          const coordinate = getSeatCoordinate(table, seatNumber);
-          const seat = document.createElement("button");
+      guests.forEach((guest) => {
+        const seatId = `${guest.table}-${guest.seat}`;
+        const coordinate = getSeatCoordinate(guest.table, guest.seat);
+        const seat = document.createElement("button");
 
-          seat.id = seatId;
-          seat.className = "seat";
-          seat.type = "button";
-          seat.style.left = `${coordinate.x}%`;
-          seat.style.top = `${coordinate.y}%`;
-          seat.dataset.seatLabel = seatId;
-          seat.setAttribute("aria-label", `${table}, seat ${seatNumber}`);
-          seat.title = `${table}, Seat ${seatNumber}`;
+        seat.id = seatId;
+        seat.className = "seat";
+        seat.type = "button";
+        seat.style.left = `${coordinate.x}%`;
+        seat.style.top = `${coordinate.y}%`;
+        seat.dataset.seatLabel = seatId;
+        seat.setAttribute("aria-label", `${guest.name}, ${guest.table}, seat ${guest.seat}`);
+        seat.title = `${guest.name} - ${guest.table}, Seat ${guest.seat}`;
 
-          seat.addEventListener("click", () => {
-            const assignedGuest = guests.find((guest) =>
-              guest.table === table && guest.seat === seatNumber
-            );
+        seat.addEventListener("click", () => {
+          guestNameInput.value = guest.name;
+          highlightSeat(seatId);
+          showGuestResult(guest, 1);
+        });
 
-            if (assignedGuest) {
-              guestNameInput.value = assignedGuest.name;
-              highlightSeat(seatId);
-              showGuestResult(assignedGuest, 1);
-            }
-          });
-
-          floorPlan.appendChild(seat);
-        }
+        floorPlan.appendChild(seat);
       });
     }
 
@@ -1431,87 +1301,93 @@
       planViewport.scrollTo({
         left: Math.max(0, targetLeft),
         top: Math.max(0, targetTop),
-        behavior: "smooth"
+        behavior: "auto"
       });
     }
 
-    function createFifteenTableLayoutImage() {
+    function createLatestTableLayoutImage() {
       const tables = Object.entries(tableCenters)
         .map(([table, center]) => createTableSvg(table, center))
         .join("");
 
       const svg = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1200">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1280">
           <defs>
-            <linearGradient id="roomBg" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stop-color="#202326"/>
-              <stop offset="0.5" stop-color="#181a1c"/>
-              <stop offset="1" stop-color="#101214"/>
-            </linearGradient>
+            <radialGradient id="hallGlow" cx="50%" cy="36%" r="65%">
+              <stop offset="0" stop-color="#262a2f"/>
+              <stop offset="0.64" stop-color="#171a1f"/>
+              <stop offset="1" stop-color="#0d1015"/>
+            </radialGradient>
             <linearGradient id="stageWood" x1="0" x2="1" y1="0" y2="1">
-              <stop offset="0" stop-color="#6b4a31"/>
-              <stop offset="1" stop-color="#2d1d15"/>
+              <stop offset="0" stop-color="#835b36"/>
+              <stop offset="0.5" stop-color="#4a2f1e"/>
+              <stop offset="1" stop-color="#2b1b13"/>
             </linearGradient>
             <linearGradient id="tableTop" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stop-color="#efefee"/>
-              <stop offset="1" stop-color="#b9b8b5"/>
+              <stop offset="0" stop-color="#faf9f4"/>
+              <stop offset="1" stop-color="#bdb9ae"/>
             </linearGradient>
             <linearGradient id="chairTop" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stop-color="#4a4c4e"/>
-              <stop offset="1" stop-color="#111315"/>
+              <stop offset="0" stop-color="#51555b"/>
+              <stop offset="1" stop-color="#171a1f"/>
             </linearGradient>
-            <pattern id="carpet" width="42" height="42" patternUnits="userSpaceOnUse">
-              <rect width="42" height="42" fill="#202224"/>
-              <path d="M0 21H42M21 0V42" stroke="#303336" stroke-width="1" opacity=".34"/>
-              <path d="M0 0L42 42M42 0L0 42" stroke="#272a2d" stroke-width=".8" opacity=".22"/>
+            <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+              <path d="M50 0H0V50" fill="none" stroke="#2c3138" stroke-width="1" opacity=".3"/>
+              <path d="M0 25H50M25 0V50" stroke="#343943" stroke-width=".7" opacity=".16"/>
             </pattern>
             <filter id="softShadow" x="-35%" y="-35%" width="170%" height="170%">
-              <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#000000" flood-opacity=".45"/>
+              <feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#000000" flood-opacity=".38"/>
             </filter>
+            <clipPath id="hallClip">
+              <path d="M64 350C94 165 263 50 500 50C737 50 906 165 936 350V664C909 815 802 920 675 955H325C198 920 91 815 64 664Z"/>
+            </clipPath>
           </defs>
 
-          <rect width="1000" height="1200" fill="#151719"/>
-          <path d="M52 338C88 145 260 22 500 22C740 22 912 145 948 338V600C910 760 810 855 690 905V1180H310V905C190 855 90 760 52 600Z" fill="url(#carpet)" stroke="#8f8f8c" stroke-width="8"/>
-          <path d="M73 323C126 151 278 48 500 48C722 48 874 151 927 323" fill="none" stroke="#d4d2cc" stroke-width="5" opacity=".82"/>
-          <path d="M52 604C83 753 178 843 315 894M948 604C917 753 822 843 685 894" fill="none" stroke="#d4d2cc" stroke-width="5" opacity=".72"/>
-
-          <g filter="url(#softShadow)">
-            <path d="M318 40H682V170L612 195H388L318 170Z" fill="url(#stageWood)" stroke="#a98762" stroke-width="3"/>
-            <rect x="402" y="52" width="196" height="78" rx="3" fill="#ebe9e5" stroke="#2a2a2a" stroke-width="4"/>
-            <rect x="468" y="122" width="66" height="42" rx="4" fill="#5f351c" stroke="#1a100c" stroke-width="3"/>
-            <line x1="501" y1="118" x2="501" y2="91" stroke="#070707" stroke-width="4"/>
-            <circle cx="501" cy="89" r="4" fill="#070707"/>
-            <circle cx="370" cy="102" r="24" fill="#2e7b20"/>
-            <circle cx="630" cy="102" r="24" fill="#2e7b20"/>
+          <rect width="1000" height="1280" fill="#090b10"/>
+          <path d="M64 350C94 165 263 50 500 50C737 50 906 165 936 350V664C909 815 802 920 675 955H325C198 920 91 815 64 664Z"
+            fill="url(#hallGlow)" stroke="#d2cfc6" stroke-width="8"/>
+          <path d="M92 352C126 188 278 82 500 82C722 82 874 188 908 352" fill="none" stroke="#f2efe8" stroke-width="4" opacity=".68"/>
+          <path d="M88 664C118 790 212 882 333 918M912 664C882 790 788 882 667 918" fill="none" stroke="#f2efe8" stroke-width="4" opacity=".48"/>
+          <path d="M64 350H135V672H64M936 350H865V672H936" fill="none" stroke="#d2cfc6" stroke-width="6" opacity=".8"/>
+          <path d="M325 955V1195H675V955" fill="#11151b" stroke="#6a6d70" stroke-width="5" opacity=".78"/>
+          <path d="M360 955V1195M500 955V1195M640 955V1195" stroke="#393d43" stroke-width="3" opacity=".8"/>
+          <g clip-path="url(#hallClip)">
+            <rect x="64" y="350" width="872" height="610" fill="url(#grid)" opacity=".52"/>
           </g>
 
           <g filter="url(#softShadow)">
-            <rect x="92" y="345" width="110" height="245" fill="#4e4e4c" stroke="#9a9a96" stroke-width="3"/>
-            <text x="147" y="424" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Empty</text>
-            <text x="147" y="454" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Space</text>
-            <text x="147" y="484" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Required</text>
-            <text x="147" y="514" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">by</text>
-            <text x="147" y="544" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Fire Dept.</text>
-
-            <rect x="798" y="345" width="110" height="245" fill="#4e4e4c" stroke="#9a9a96" stroke-width="3"/>
-            <text x="853" y="424" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Empty</text>
-            <text x="853" y="454" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Space</text>
-            <text x="853" y="484" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Required</text>
-            <text x="853" y="514" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">by</text>
-            <text x="853" y="544" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">Fire Dept.</text>
+            <path d="M305 82H695V207L625 238H375L305 207Z" fill="url(#stageWood)" stroke="#ba9469" stroke-width="3"/>
+            <rect x="390" y="96" width="220" height="76" rx="4" fill="#f3f0ea" stroke="#1a1a1a" stroke-width="4"/>
+            <rect x="463" y="165" width="74" height="44" rx="4" fill="#6b3e20" stroke="#1a100c" stroke-width="3"/>
+            <line x1="500" y1="161" x2="500" y2="132" stroke="#090909" stroke-width="4"/>
+            <circle cx="500" cy="129" r="4" fill="#090909"/>
+            <circle cx="370" cy="145" r="23" fill="#3f872d"/>
+            <circle cx="630" cy="145" r="23" fill="#3f872d"/>
           </g>
 
-          <g fill="none" stroke="#d4d2cc" stroke-width="4" opacity=".82">
-            <path d="M52 345H100V614H52M948 345H900V614H948"/>
-            <path d="M305 878H405V1180H305Z"/>
-            <path d="M405 878H586V1180H405Z"/>
-            <path d="M586 878H690V1180H586Z"/>
-            <path d="M330 980A72 72 0 0 1 258 908M475 1076A72 72 0 0 1 403 1004M595 980A72 72 0 0 0 667 908"/>
+          <g filter="url(#softShadow)">
+            <rect x="104" y="392" width="110" height="238" rx="4" fill="#4b4e50" stroke="#9d9d98" stroke-width="3"/>
+            <text x="159" y="468" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Empty</text>
+            <text x="159" y="497" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Space</text>
+            <text x="159" y="526" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Required</text>
+            <text x="159" y="555" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">by Fire Dept.</text>
+
+            <rect x="786" y="392" width="110" height="238" rx="4" fill="#4b4e50" stroke="#9d9d98" stroke-width="3"/>
+            <text x="841" y="468" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Empty</text>
+            <text x="841" y="497" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Space</text>
+            <text x="841" y="526" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Required</text>
+            <text x="841" y="555" fill="#f6f1e8" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">by Fire Dept.</text>
           </g>
 
-          <rect x="595" y="213" width="72" height="54" fill="#5b4a38" stroke="#9a8266" stroke-width="3" filter="url(#softShadow)"/>
-          <circle cx="170" cy="800" r="22" fill="#2e7b20" opacity=".95"/>
-          <circle cx="820" cy="800" r="22" fill="#2e7b20" opacity=".95"/>
+          <g fill="none" stroke="#d2cfc6" stroke-width="4" opacity=".68">
+            <path d="M104 405C72 405 72 470 104 470M104 525C72 525 72 590 104 590"/>
+            <path d="M896 405C928 405 928 470 896 470M896 525C928 525 928 590 896 590"/>
+            <path d="M380 1040A76 76 0 0 1 304 964M500 1120A76 76 0 0 1 424 1044M620 1040A76 76 0 0 0 696 964"/>
+          </g>
+
+          <rect x="590" y="248" width="74" height="54" rx="3" fill="#5b4937" stroke="#a98c6a" stroke-width="3" filter="url(#softShadow)"/>
+          <circle cx="168" cy="845" r="22" fill="#3f872d" opacity=".95"/>
+          <circle cx="832" cy="845" r="22" fill="#3f872d" opacity=".95"/>
 
           ${tables}
         </svg>
@@ -1522,10 +1398,11 @@
 
     function createTableSvg(table, center) {
       const x = center.x * 10;
-      const y = center.y * 12;
-      const chairs = Object.values(seatOffsets).map((offset) => {
+      const y = center.y * 12.8;
+      const chairs = Array.from({ length: guestCountsByTable[table] || 0 }, (_, index) => {
+        const offset = seatOffsets[index + 1];
         const chairX = offset.x * 10;
-        const chairY = offset.y * 12;
+        const chairY = offset.y * 12.8;
         const rotation = Math.atan2(offset.y, offset.x) * (180 / Math.PI) + 90;
 
         return `
