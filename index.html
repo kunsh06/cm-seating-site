@@ -351,24 +351,6 @@
       transform: translate(-50%, -50%) scale(1.55);
     }
 
-    .seat.is-active::after {
-      content: attr(data-seat-label);
-      position: absolute;
-      left: 50%;
-      bottom: calc(100% + 12px);
-      min-width: max-content;
-      transform: translateX(-50%);
-      border: 1px solid rgba(255, 226, 154, 0.55);
-      border-radius: var(--radius);
-      color: #14110a;
-      background: var(--gold-bright);
-      padding: 5px 8px;
-      font-size: 0.64rem;
-      font-weight: 900;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
     .empty-state {
       margin: 0;
       color: var(--muted);
@@ -602,7 +584,7 @@
 
   <script>
     // Guest data from the latest pasted roster.
-    // Seat numbers are assigned in the order names appear within each table.
+    // Seat numbers are assigned by the initials placement image.
     const guests = [
       {
             "name": "Genesis Patiño-Salgado",
@@ -1081,6 +1063,209 @@
       }
     ];
 
+    const initialsByName = {
+      "Genesis Patiño-Salgado": "G.P",
+      "Miguel Jaller Martelo": "M.J",
+      "Caleb Keling": "C.K",
+      "Shuai Zhang": "S.Z",
+      "Angel Hernandez Moya": "A.H",
+      "Damien Votaw alt": "D.V",
+      "Stephanie Ng": "S.N",
+      "Jose Perez Cruz": "J.P",
+      "Gabriel Segura": "G.S",
+      "Angel Pacheco": "A.P",
+      "Joel Guzman": "J.G",
+      "Bryan Bejarano": "B.B",
+      "George Romo": "G.R",
+      "Brian Andrew": "B.A",
+      "Bryant Prieto": "B.P",
+      "Rivka Napitupulu": "R.N",
+      "Jeannie Ortega Fuentes": "J.O",
+      "Mary Nguyen": "M.N",
+      "Juan Mesa": "J.M",
+      "Tanvi Joshi": "T.J",
+      "Anthony Castaniero": "A.C",
+      "Kimberly Gage": "K.G",
+      "Brent Birtcil": "B.B",
+      "Luke Pongetti": "L.P",
+      "Adrian Gonzalez Pulido": "A.G",
+      "Siomara Sanchez": "S.S",
+      "Edward Grajeda Chavez": "E.G",
+      "Evelin De Leon Santos": "E.D",
+      "Lilly Tisza": "L.T",
+      "Luis Jimenez": "L.J",
+      "Kiana Chi": "K.C",
+      "Keira Chi": "K.C",
+      "Joshua Chan": "J.C",
+      "Bryan Santamaria": "B.S",
+      "Jack Xia": "J.X",
+      "Galen Tang": "G.T",
+      "Stephanie Smith": "S.S",
+      "Dave Olivas": "D.O",
+      "John Harvey": "J.H",
+      "Arsani Gad": "A.G",
+      "Miland Qaqo": "M.Q",
+      "Hayley Yang": "H.Y",
+      "Aaron Schwartz": "A.S",
+      "Ashely Lasiter": "A.L",
+      "Jessica Albino": "J.A",
+      "Varsha Thummaty": "V.T",
+      "Khadijah Muhammad": "K.M",
+      "Jose Enriquez-Escobedo": "J.E",
+      "Sait Jijon": "S.J",
+      "Andrea Tenorio": "A.T",
+      "Lucas Gribi": "L.G",
+      "Craig Valdez": "C.V",
+      "Isidro Valdez Lopez": "I.V",
+      "Jose Martinez Lopez": "J.M",
+      "Melina Rodriguez": "M.R",
+      "Elvia Bacilio": "E.B",
+      "Diego Gamboa": "D.G",
+      "Kimberly Veronica": "K.V",
+      "Tony Gonzalez": "T.G",
+      "Paul Martin": "P.M",
+      "Jian pei Liang": "J.P",
+      "Nitika Sathiya": "N.S",
+      "Jessica Van Strander": "J.V",
+      "Rebecca Sandager": "R.S",
+      "Jonathan Arroyo": "J.A",
+      "Arlynn Mejia": "A.M",
+      "John Lund": "J.L",
+      "Brisny Argueta Balan": "B.A",
+      "Brandon Cisneros": "B.C",
+      "Fabrizio Guzman Barreras": "F.G",
+      "Alondra Zermeno": "A.Z",
+      "Gracie Kallstrom": "G.K",
+      "Boone Ferrier": "B.F",
+      "Fatima Ojeda": "F.O",
+      "Alexander Hu": "A.H",
+      "Kyle Fong": "K.F",
+      "Cassie Blaufuss": "C.B",
+      "Kristen Luna Valladolid": "K.L",
+      "Shen Huot": "S.H",
+      "Enya Gan": "E.G",
+      "Ema Maeda": "E.M",
+      "Bestabeth Cacho-Lopez": "B.C",
+      "Aland Chi": "A.C",
+      "Sophia Bucholtz Truong": "S.B",
+      "Angel Jauregui": "A.J",
+      "Edwin Aguirre": "E.A",
+      "Jack Nakamura": "J.N",
+      "Andrew Vander Weide": "A.V",
+      "Mary Jo Ford": "M.J",
+      "Daniela Raya Hernandez": "D.R",
+      "Michael Lindquist": "M.L",
+      "Sihaya Clifford": "S.C",
+      "Estrella Lopez": "E.L",
+      "Joseph Trujillo": "J.T",
+      "Lijin Huang": "L.H"
+    };
+
+    // Seat numbers follow the physical positions from the initials screenshot:
+    // 1 top, 2 upper-right, 3 right, 4 lower-right, 5 bottom, 6 lower-left, 7 left, 8 upper-left.
+    const seatByName = {
+      "Luke Pongetti": 1,
+      "Adrian Gonzalez Pulido": 2,
+      "Edward Grajeda Chavez": 3,
+      "Luis Jimenez": 5,
+      "Lilly Tisza": 6,
+      "Evelin De Leon Santos": 7,
+      "Siomara Sanchez": 8,
+      "John Harvey": 1,
+      "Miland Qaqo": 2,
+      "Ashely Lasiter": 5,
+      "Aaron Schwartz": 4,
+      "Hayley Yang": 7,
+      "Arsani Gad": 8,
+      "John Lund": 1,
+      "Brisny Argueta Balan": 2,
+      "Alondra Zermeno": 3,
+      "Boone Ferrier": 5,
+      "Gracie Kallstrom": 6,
+      "Fabrizio Guzman Barreras": 7,
+      "Brandon Cisneros": 8,
+      "Ema Maeda": 1,
+      "Bestabeth Cacho-Lopez": 2,
+      "Sophia Bucholtz Truong": 3,
+      "Andrew Vander Weide": 4,
+      "Jack Nakamura": 5,
+      "Angel Jauregui": 6,
+      "Aland Chi": 7,
+      "Edwin Aguirre": 8,
+      "Mary Jo Ford": 1,
+      "Daniela Raya Hernandez": 2,
+      "Michael Lindquist": 3,
+      "Joseph Trujillo": 4,
+      "Estrella Lopez": 5,
+      "Lijin Huang": 6,
+      "Sihaya Clifford": 7,
+      "Rivka Napitupulu": 1,
+      "Mary Nguyen": 2,
+      "Juan Mesa": 3,
+      "Anthony Castaniero": 4,
+      "Brent Birtcil": 5,
+      "Kimberly Gage": 6,
+      "Tanvi Joshi": 7,
+      "Jeannie Ortega Fuentes": 8,
+      "Genesis Patiño-Salgado": 1,
+      "Miguel Jaller Martelo": 2,
+      "Caleb Keling": 3,
+      "Damien Votaw alt": 4,
+      "Stephanie Ng": 5,
+      "Angel Hernandez Moya": 6,
+      "Shuai Zhang": 7,
+      "Melina Rodriguez": 1,
+      "Isidro Valdez Lopez": 2,
+      "Jose Martinez Lopez": 3,
+      "Diego Gamboa": 4,
+      "Tony Gonzalez": 5,
+      "Kimberly Veronica": 6,
+      "Elvia Bacilio": 7,
+      "Paul Martin": 1,
+      "Jonathan Arroyo": 2,
+      "Arlynn Mejia": 3,
+      "Nitika Sathiya": 5,
+      "Jian pei Liang": 6,
+      "Jessica Van Strander": 7,
+      "Rebecca Sandager": 8,
+      "Fatima Ojeda": 1,
+      "Alexander Hu": 2,
+      "Enya Gan": 3,
+      "Shen Huot": 5,
+      "Kristen Luna Valladolid": 6,
+      "Cassie Blaufuss": 7,
+      "Kyle Fong": 8,
+      "Angel Pacheco": 1,
+      "Jose Perez Cruz": 2,
+      "Gabriel Segura": 3,
+      "Joel Guzman": 4,
+      "Brian Andrew": 5,
+      "Bryant Prieto": 6,
+      "George Romo": 7,
+      "Bryan Bejarano": 8,
+      "Jessica Albino": 1,
+      "Varsha Thummaty": 2,
+      "Jose Enriquez-Escobedo": 3,
+      "Lucas Gribi": 4,
+      "Craig Valdez": 5,
+      "Andrea Tenorio": 6,
+      "Sait Jijon": 7,
+      "Khadijah Muhammad": 8,
+      "Kiana Chi": 1,
+      "Keira Chi": 2,
+      "Jack Xia": 3,
+      "Dave Olivas": 4,
+      "Stephanie Smith": 5,
+      "Galen Tang": 6,
+      "Bryan Santamaria": 7,
+      "Joshua Chan": 8
+    };
+
+    guests.forEach((guest) => {
+      guest.initials = initialsByName[guest.name] || guest.name.split(/\s+/).map((part) => part[0]).join(".");
+      guest.seat = seatByName[guest.name] || guest.seat;
+    });
+
     // Table center points are percentages of the portrait banquet layout.
     // Adjust these values if the production image changes.
     const tableCenters = {
@@ -1115,10 +1300,18 @@
     // Example exact-position overrides. Add more entries like "T12-4": { x: 70.4, y: 57.6 } later.
     const customSeatCoordinates = {};
 
-    const guestCountsByTable = guests.reduce((counts, guest) => {
-      counts[guest.table] = Math.max(counts[guest.table] || 0, guest.seat);
+    const occupiedSeatsByTable = guests.reduce((counts, guest) => {
+      if (!counts[guest.table]) {
+        counts[guest.table] = [];
+      }
+
+      counts[guest.table].push(guest.seat);
       return counts;
     }, {});
+
+    Object.values(occupiedSeatsByTable).forEach((seats) => {
+      seats.sort((a, b) => a - b);
+    });
 
     const floorPlan = document.querySelector("#floorPlan");
     const floorPlanImage = document.querySelector("#floorPlanImage");
@@ -1250,7 +1443,7 @@
         seat.type = "button";
         seat.style.left = `${coordinate.x}%`;
         seat.style.top = `${coordinate.y}%`;
-        seat.dataset.seatLabel = seatId;
+        seat.dataset.seatLabel = `${guest.initials} ${seatId}`;
         seat.setAttribute("aria-label", `${guest.name}, ${guest.table}, seat ${guest.seat}`);
         seat.title = `${guest.name} - ${guest.table}, Seat ${guest.seat}`;
 
@@ -1399,8 +1592,8 @@
     function createTableSvg(table, center) {
       const x = center.x * 10;
       const y = center.y * 12.8;
-      const chairs = Array.from({ length: guestCountsByTable[table] || 0 }, (_, index) => {
-        const offset = seatOffsets[index + 1];
+      const chairs = (occupiedSeatsByTable[table] || []).map((seatNumber) => {
+        const offset = seatOffsets[seatNumber];
         const chairX = offset.x * 10;
         const chairY = offset.y * 12.8;
         const rotation = Math.atan2(offset.y, offset.x) * (180 / Math.PI) + 90;
